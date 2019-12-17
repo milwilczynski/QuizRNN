@@ -5,6 +5,7 @@ import {
   ProgressBarAndroid,
   StyleSheet,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 
 import QuizComponent from '../components/QuizComponent';
@@ -21,13 +22,11 @@ export default class TestScreen extends React.Component {
       data: {},
       tasks: [],
       task: {},
-      result: {
-        score: 0,
-        nick: 'Mariuszek',
-        total: '',
-        type: '',
-        date: '',
-      },
+      score: 0,
+      nick: '',
+      total: '',
+      type: '',
+      date: '',
       currId: 0,
     };
   }
@@ -79,9 +78,7 @@ export default class TestScreen extends React.Component {
 
     if (arr[id].isCorrect) {
       this.setState(prev => ({
-        result: {
-          score: prev.result.score + 2,
-        },
+        score: prev.score + 1,
         currId:
           prev.currId <= this.props.numberOfTasks ? prev.currId + 1 : null,
         task: this.state.tasks[this.state.currId],
@@ -114,13 +111,13 @@ export default class TestScreen extends React.Component {
     const year = new Date().getFullYear(); //Current Year
 
     const result = {
-      nick: 'Sanic',
-      score: this.state.result.score,
+      nick: this.state.nick,
+      score: this.state.score,
       total: this.props.numberOfTasks,
       type: this.state.data.tags[0],
       date: date + '-' + month + '-' + year,
     };
-
+    alert(this.state.nick);
     //wysylanie
     //this.sendResultAsync(result);
 
@@ -153,10 +150,15 @@ export default class TestScreen extends React.Component {
   timeIsZero() {
     clearInterval(this.interval);
     this.setState(prev => ({
-      currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+      currId: prev.currId <= this.props.numberOfTasks ? prev.currId + 1 : null,
       task: this.state.tasks[this.state.currId + 1],
     }));
     this.setProgress(this.state.task.duration);
+  }
+  onChangeText(text) {
+    this.setState({
+      nick: text,
+    });
   }
   render() {
     if (this.isMaxLenght()) {
@@ -175,19 +177,48 @@ export default class TestScreen extends React.Component {
           question={this.state.task.question}
           answers={this.state.task.answers}
           func={this.checkAnserw.bind(this)}
-          score={this.state.result.score}
+          score={this.state.score}
         />
       );
     } else {
       clearInterval(this.interval);
       return (
         <View style={styles.container}>
-          <TouchableOpacity
-            onPress={() => {
-              this.goToResults();
-            }}>
-            <Text style={{color: 'white'}}>Zakoncz test!</Text>
-          </TouchableOpacity>
+          <View style={{alignItems: 'center', marginTop: 30}}>
+            <Text style={{color: 'white', marginBottom: 30}}>
+              Enter your nickname here!
+            </Text>
+            <TextInput
+              style={{
+                color: 'white',
+                width: 100,
+                height: 40,
+                borderColor: 'gray',
+                borderWidth: 1,
+              }}
+              onChangeText={text => {
+                this.onChangeText(text);
+              }}
+              value={this.state.nick}
+            />
+            <Text style={{color: 'white'}}>
+              Your score is {this.state.score}!
+            </Text>
+          </View>
+          <View style={{flex: 1, alignItems: 'center', marginTop: 30}}>
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: 'aqua',
+                borderRadius: 10,
+                padding: 10,
+              }}
+              onPress={() => {
+                this.goToResults();
+              }}>
+              <Text style={{color: 'white'}}>See more results!</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
