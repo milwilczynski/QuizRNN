@@ -53,6 +53,7 @@ export default class TestScreen extends React.Component {
   componentDidMount() {
     this.getTestFromAPIAsync();
   }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -81,17 +82,30 @@ export default class TestScreen extends React.Component {
         result: {
           score: prev.result.score + 2,
         },
-        currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+        currId:
+          prev.currId <= this.props.numberOfTasks ? prev.currId + 1 : null,
         task: this.state.tasks[this.state.currId],
       }));
     } else {
       this.setState(prev => ({
-        currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+        currId:
+          prev.currId <= this.props.numberOfTasks ? prev.currId + 1 : null,
         task: this.state.tasks[this.state.currId],
       }));
     }
 
     this.setProgress(this.state.task.duration);
+  }
+
+  sendResultAsync(result) {
+    fetch('http://tgryl.pl/quiz/result', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(result),
+    }).then(null);
   }
 
   goToResults() {
@@ -100,12 +114,15 @@ export default class TestScreen extends React.Component {
     const year = new Date().getFullYear(); //Current Year
 
     const result = {
-      nick: 'Mariuszek',
+      nick: 'Sanic',
       score: this.state.result.score,
       total: this.props.numberOfTasks,
       type: this.state.data.tags[0],
       date: date + '-' + month + '-' + year,
     };
+
+    //wysylanie
+    //this.sendResultAsync(result);
 
     Navigation.push('MAIN_STACK', {
       component: {
@@ -125,6 +142,14 @@ export default class TestScreen extends React.Component {
     }).then();
   }
 
+  isMaxLenght() {
+    if (this.state.currId > this.props.numberOfTasks) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   timeIsZero() {
     clearInterval(this.interval);
     this.setState(prev => ({
@@ -134,8 +159,7 @@ export default class TestScreen extends React.Component {
     this.setProgress(this.state.task.duration);
   }
   render() {
-    let val = 1;
-    if (val == 1) {
+    if (this.isMaxLenght()) {
       if (this.state.time <= 0) {
         this.timeIsZero();
       }
@@ -151,9 +175,11 @@ export default class TestScreen extends React.Component {
           question={this.state.task.question}
           answers={this.state.task.answers}
           func={this.checkAnserw.bind(this)}
+          score={this.state.result.score}
         />
       );
     } else {
+      clearInterval(this.interval);
       return (
         <View style={styles.container}>
           <TouchableOpacity
@@ -168,4 +194,10 @@ export default class TestScreen extends React.Component {
   }
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#393e46',
+    justifyContent: 'space-between',
+  },
 });

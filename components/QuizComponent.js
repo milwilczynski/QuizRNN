@@ -24,7 +24,7 @@ export default class QuizComponent extends React.Component {
             this.props.func(i);
           }}
           style={styles.button}>
-          <Text  style={{color: 'white', textAlign: 'center'}}>{answersArray[i].content}</Text>
+          <Text style={{color: 'white', textAlign: 'center'}}>{answersArray[i].content}</Text>
         </TouchableOpacity>,
       );
     }
@@ -56,7 +56,10 @@ export default class QuizComponent extends React.Component {
           </Text>
         </View>
         <View style={styles.buttonContainer}>{buttonList}</View>
-        <View style={{flex:2}}></View>
+        <View style={{flex: 2}}></View>
+        <View>
+          <Text style={{color: 'white'}}>Score: {this.props.score}</Text>
+        </View>
       </View>
     );
   }
