@@ -7,102 +7,165 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import QuizComponent from '../components/QuizComponent';
+import {Navigation} from 'react-native-navigation';
+
 export default class TestScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isNext: false,
+      loading: true,
       progress: 0,
       time: 0,
+      data: {},
+      tasks: [],
+      task: {},
+      result: {
+        score: 0,
+        nick: 'Mariuszek',
+        total: '',
+        type: '',
+        date: '',
+      },
+      currId: 0,
     };
   }
+
+  getTestFromAPIAsync() {
+    // return fetch('http://www.tgryl.pl/quiz/test/5ddbd9525531310a5a8f2482')
+    return fetch(`http://www.tgryl.pl/quiz/test/${this.props.task_id}`)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          loading: false,
+          data: responseJson,
+          tasks: responseJson.tasks,
+          task: responseJson.tasks[0],
+          time: responseJson.tasks[0].duration,
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  }
+
   componentDidMount() {
-    this.setState(() => ({
-      time: this.props.test.duration,
-    })),
-      (this.interval = setInterval(
-        () =>
-          this.setState(prev => ({
-            progress: prev.progress + 0.033,
-            time: prev.time - 1,
-          })),
-        1000,
-      ));
+    this.getTestFromAPIAsync();
   }
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
+  setProgress(duration) {
+    clearInterval(this.interval);
+    this.setState(() => ({
+      time: duration,
+      progress: 0,
+    })),
+      (this.interval = setInterval(
+        () =>
+          this.setState(prev => ({
+            progress: prev.progress + 1.0 / this.state.task.duration,
+            time: prev.time - 1,
+          })),
+        1000,
+      ));
+  }
 
+  checkAnserw(id) {
+    const arr = this.state.task.answers;
+
+    if (arr[id].isCorrect) {
+      this.setState(prev => ({
+        result: {
+          score: prev.result.score + 2,
+        },
+        currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+        task: this.state.tasks[this.state.currId],
+      }));
+    } else {
+      this.setState(prev => ({
+        currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+        task: this.state.tasks[this.state.currId],
+      }));
+    }
+
+    this.setProgress(this.state.task.duration);
+  }
+
+  goToResults() {
+    const date = new Date().getDate(); //Current Date
+    const month = new Date().getMonth() + 1; //Current Month
+    const year = new Date().getFullYear(); //Current Year
+
+    const result = {
+      nick: 'Mariuszek',
+      score: this.state.result.score,
+      total: this.props.numberOfTasks,
+      type: this.state.data.tags[0],
+      date: date + '-' + month + '-' + year,
+    };
+
+    Navigation.push('MAIN_STACK', {
+      component: {
+        name: 'Result',
+        passProps: {
+          text: '',
+        },
+        options: {
+          topBar: {
+            title: {
+              text: 'Results',
+              alignment: 'center',
+            },
+          },
+        },
+      },
+    }).then();
+  }
+
+  timeIsZero() {
+    clearInterval(this.interval);
+    this.setState(prev => ({
+      currId: prev.currId < this.props.numberOfTasks ? prev.currId + 1 : null,
+      task: this.state.tasks[this.state.currId + 1],
+    }));
+    this.setProgress(this.state.task.duration);
+  }
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={{flex: 0.8}}>
+    let val = 1;
+    if (val == 1) {
+      if (this.state.time <= 0) {
+        this.timeIsZero();
+      }
+      if (this.state.loading === true) {
+        return <View />;
+      }
+      return (
+        <QuizComponent
+          currQuestion={this.state.currId}
+          amountofQuestions={this.props.numberOfTasks}
+          time={this.state.time}
+          progress={this.state.progress}
+          question={this.state.task.question}
+          answers={this.state.task.answers}
+          func={this.checkAnserw.bind(this)}
+        />
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => {
+              this.goToResults();
+            }}>
+            <Text style={{color: 'white'}}>Zakoncz test!</Text>
+          </TouchableOpacity>
         </View>
-        {this.state.time <= 0 ? clearInterval(this.interval) : null}
-        <View>
-            <Text style={{color: 'aqua' }}>
-              Question {this.props.currQuestion} of
-              {' ' + this.props.amountofQuestions}
-            </Text>
-            <Text style={{color: '#eeeeee' }}>{this.state.time}</Text>
-          <View>
-            <ProgressBarAndroid
-              styleAttr="Horizontal"
-              indeterminate={false}
-              progress={this.state.progress}
-              animating={true}
-            />
-          </View>
-        </View>
-          <Text style={{color: '#eeeeee', fontSize: 14, textAlign: 'center'}}>
-            {this.props.test.question}
-          </Text>
-          <View style={styles.buttonsContainer}>
-              <TouchableOpacity style={styles.buttons}>
-                <Text style={{color:'#eeeeee'}}>{this.props.test.answers[0].content}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttons}>
-                <Text style={{color:'#eeeeee'}}>{this.props.test.answers[1].content}</Text>
-              </TouchableOpacity>
-          </View>
-          <View style={styles.buttonsContainer}>
-              <TouchableOpacity style={styles.buttons}>
-                <Text style={{color:'#eeeeee'}}>{this.props.test.answers[2].content}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttons}>
-                <Text style={{color:'#eeeeee'}}>{this.props.test.answers[3].content}</Text>
-              </TouchableOpacity>
-          </View>
-        <View style={{flex: 1}}>
-        </View>
-        </View>
-
-    );
+      );
+    }
   }
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#393e46',
-    justifyContent: 'space-between',
-  },
-  buttonsContainer: {
-    flex: 1,
-    alignContent: 'center',
-    flexDirection: 'row',
-  },
-  buttonsRow: {
-    flex: 2,
-  },
-  buttons: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'aqua',
-    marginTop: 30,
-    marginLeft: 5,
-    marginRight: 5,
-  },
 });

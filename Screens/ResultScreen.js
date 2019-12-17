@@ -12,8 +12,23 @@ import ResultComponent from './../components/ResultComponent';
 export default class ResultScreen extends React.Component {
   state = {
     refreshing: false,
-    data: results,
+    data: null,
   };
+
+  componentDidMount() {
+    this.getTestsFromAPIAsync();
+  }
+
+  getTestsFromAPIAsync() {
+    return fetch('http://www.tgryl.pl/quiz/results')
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({data: responseJson});
+      })
+      .catch(error => {
+        alert(error);
+      });
+  }
 
   render() {
     return (

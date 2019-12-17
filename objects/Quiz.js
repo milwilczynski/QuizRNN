@@ -4,11 +4,11 @@ const tasks = [
       'Który wódz po smierci Gajusza Mariusza prowadził wojne domową z Sulla?',
     answers: [
       {
-        content: 'Julek Malenka',
+        content: 'LUCJUSZ CYNNA',
         isCorrect: true,
       },
       {
-        content: 'Twoj stary',
+        content: 'Juliusz CEZAR',
         isCorrect: false,
       },
       {
