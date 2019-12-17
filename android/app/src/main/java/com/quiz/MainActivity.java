@@ -1,4 +1,4 @@
-package com.template;
+package com.quiz;
 
 import com.facebook.react.ReactActivity;
 

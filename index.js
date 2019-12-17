@@ -30,12 +30,12 @@ Navigation.events().registerAppLaunchedListener(() => {
         },
       ],
       title: {
-        color: 'white',
+        color: '#eeeeee',
         alignment: 'center',
         text: 'Home',
       },
       background: {
-        color: 'gray',
+        color: '#222831',
       },
     },
   });
