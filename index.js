@@ -8,11 +8,13 @@ import ResultScreen from './Screens/ResultScreen';
 import {Navigation} from 'react-native-navigation';
 import {Dimensions} from 'react-native';
 import Drawer from './Screens/Drawer';
+import Rules from './Screens/Rules';
 
 Navigation.registerComponent('Home', () => App);
 Navigation.registerComponent('Test', () => TestScreen);
 Navigation.registerComponent('Result', () => ResultScreen);
 Navigation.registerComponent('Drawer', () => Drawer);
+Navigation.registerComponent('Rules', () => Rules);
 
 const {width} = Dimensions.get('window');
 Navigation.events().registerAppLaunchedListener(() => {
