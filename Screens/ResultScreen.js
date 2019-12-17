@@ -36,7 +36,7 @@ export default class ResultScreen extends React.Component {
         <FlatList
           data={this.state.data}
           renderItem={({item}) => <ResultComponent item={item} />}
-          keyExtractor={item => item.nick}
+          keyExtractor={item => item.nick + Math.random()}
           refreshControl={this._refreshControl()}
         />
       </View>
