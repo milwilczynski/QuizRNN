@@ -16,10 +16,10 @@ export default class ResultScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.getTestsFromAPIAsync();
+    this.getResultsFromAPIAsync();
   }
 
-  getTestsFromAPIAsync() {
+  getResultsFromAPIAsync() {
     return fetch('http://www.tgryl.pl/quiz/results')
       .then(response => response.json())
       .then(responseJson => {

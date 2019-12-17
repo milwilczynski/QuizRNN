@@ -18,7 +18,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {Navigation} from 'react-native-navigation';
 import TestComponent from './components/TestComponent';
-import {tasks} from './objects/Quiz';
+
 
 export default class App extends React.Component {
   constructor(props) {
