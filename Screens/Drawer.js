@@ -107,7 +107,7 @@ export default class Drawer extends Component {
           onPress={() => {
             this.goToTest(`Test #${i + 1}`, data[i].numberOfTasks, data[i].id);
           }}>
-          <Text style={{color: 'white'}}> Test #{i + 1} </Text>
+          <Text style={{color: 'white', fontFamily: 'Quicksand-Bold'}}> Test #{i + 1} </Text>
         </TouchableOpacity>,
       );
     }
@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: '#eeeeee',
+    fontFamily: 'OpenSans-Bold'
   },
   titleView: {
     flex: 1,
