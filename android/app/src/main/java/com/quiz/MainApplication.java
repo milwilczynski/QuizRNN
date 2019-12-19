@@ -43,6 +43,7 @@ public class MainApplication extends NavigationApplication {
         return Arrays.<ReactPackage>asList(
                 new AsyncStoragePackage(),
                 new SplashScreenReactPackage()
+
                 // eg. new VectorIconsPackage()
         );
     }

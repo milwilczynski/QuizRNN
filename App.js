@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
-import { useEffect } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Navigation} from 'react-native-navigation';
 import TestComponent from './components/TestComponent';
