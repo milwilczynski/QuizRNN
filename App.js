@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import SplashScreen from 'react-native-splash-screen';
+import { useEffect } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Navigation} from 'react-native-navigation';
 import TestComponent from './components/TestComponent';
@@ -102,6 +104,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.getTestsFromAPIAsync();
+    SplashScreen.hide();
   }
 
   render() {
@@ -126,6 +129,7 @@ export default class App extends React.Component {
     }
     return (
       <View style={styles.container}>
+
         <ScrollView>{availableTestsArray}</ScrollView>
       </View>
     );
