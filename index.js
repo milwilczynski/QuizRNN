@@ -15,7 +15,6 @@ Navigation.registerComponent('Test', () => TestScreen);
 Navigation.registerComponent('Result', () => ResultScreen);
 Navigation.registerComponent('Drawer', () => Drawer);
 Navigation.registerComponent('Rules', () => Rules);
-
 const {width} = Dimensions.get('window');
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setDefaultOptions({
