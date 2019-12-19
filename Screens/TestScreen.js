@@ -119,7 +119,7 @@ export default class TestScreen extends React.Component {
     };
     alert(this.state.nick);
     //wysylanie
-    this.sendResultAsync(result);
+    //this.sendResultAsync(result);
 
     Navigation.push('MAIN_STACK', {
       component: {
